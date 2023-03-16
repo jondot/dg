@@ -1,0 +1,63 @@
+[package]
+name = "dg"
+version = "1.0.0"
+edition = "2021"
+
+
+#
+# cargo binstall metadata:
+#
+
+[package.metadata.binstall.overrides.x86_64-pc-windows-msvc]
+pkg-url = "{ repo }/releases/download/v{ version }/dg-x86_64-windows.zip"
+bin-dir = "dg-x86_64-windows/dg.exe"
+pkg-fmt = "zip"
+
+[package.metadata.binstall.overrides.x86_64-apple-darwin]
+pkg-url = "{ repo }/releases/download/v{ version }/dg-x86_64-macos.tar.xz"
+bin-dir = "dg-x86_64-macos/dg"
+pkg-fmt = "txz"
+
+[package.metadata.binstall.overrides.aarch64-apple-darwin]
+pkg-url = "{ repo }/releases/download/v{ version }/dg-aarch64-macos.tar.xz"
+bin-dir = "dg-x86_64-macos/dg"
+pkg-fmt = "txz"
+
+[package.metadata.binstall.overrides.x86_64-unknown-linux-gnu]
+pkg-url = "{ repo }/releases/download/v{ version }/dg-x86_64-linux.tar.xz"
+bin-dir = "dg-x86_64-linux/dg"
+pkg-fmt = "txz"
+
+# </cargo binstall>
+
+[[bin]]
+name = "dg"
+path = "src/main.rs"
+required-features = ["cli"]
+
+[features]
+cli = ["dep:eyre"]
+default = ["cli"]
+
+[dependencies]
+
+eyre = { version = "0.6.8", optional = true }
+argh = "0.1.10"
+owo-colors = "3.5.0"
+tabled = { version = "0.10.0", features = ["color"] }
+git2 = "0.16.1"
+ignore = "0.4.20"
+indicatif = "0.17.3"
+num_cpus = "1.15.0"
+
+
+# tracing = "^0.1.34"
+# tracing-tree = { version = "0.2.1" }
+# tracing-subscriber = { version = "^0.3.11", features = ["env-filter"] }
+
+[dev-dependencies]
+insta = { version = "1.17.1", features = ["backtrace", "redactions"] }
+pretty_assertions = "1"
+trycmd = "0.14.10"
+# rstest = "^0.14.0"
+# serial_test = "0.4.0"

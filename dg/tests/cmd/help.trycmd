@@ -1,0 +1,13 @@
+```console
+$ dg --help
+Usage: dg [-b] [-p <path>]
+
+dg: find dirty local Git repos with pending changes or unpushed content
+
+Options:
+  -b, --branches    include analysis for local branches
+  -p, --path        root path (default ".")
+  --help            display usage information
+  -V, --version     print version information and exit
+
+```
