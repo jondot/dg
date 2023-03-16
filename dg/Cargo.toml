@@ -40,7 +40,10 @@ eyre = { version = "0.6.8", optional = true }
 argh = "0.1.10"
 owo-colors = "3.5.0"
 tabled = { version = "0.10.0", features = ["color"] }
-git2 = { version = "0.16.1", features = ["vendored-libgit2"] }
+git2 = { version = "0.16.1", features = [
+  "vendored-libgit2",
+  "vendored-openssl",
+] }
 ignore = "0.4.20"
 indicatif = "0.17.3"
 num_cpus = "1.15.0"
