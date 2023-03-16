@@ -18,11 +18,6 @@ pkg-url = "{ repo }/releases/download/v{ version }/dg-x86_64-macos.tar.xz"
 bin-dir = "dg-x86_64-macos/dg"
 pkg-fmt = "txz"
 
-[package.metadata.binstall.overrides.aarch64-apple-darwin]
-pkg-url = "{ repo }/releases/download/v{ version }/dg-aarch64-macos.tar.xz"
-bin-dir = "dg-x86_64-macos/dg"
-pkg-fmt = "txz"
-
 [package.metadata.binstall.overrides.x86_64-unknown-linux-gnu]
 pkg-url = "{ repo }/releases/download/v{ version }/dg-x86_64-linux.tar.xz"
 bin-dir = "dg-x86_64-linux/dg"
@@ -45,7 +40,7 @@ eyre = { version = "0.6.8", optional = true }
 argh = "0.1.10"
 owo-colors = "3.5.0"
 tabled = { version = "0.10.0", features = ["color"] }
-git2 = "0.16.1"
+git2 = { version = "0.16.1", features = ["vendored-libgit2"] }
 ignore = "0.4.20"
 indicatif = "0.17.3"
 num_cpus = "1.15.0"

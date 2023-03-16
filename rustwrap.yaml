@@ -10,9 +10,6 @@ targets:
   - platform: darwin
     arch: x64
     url_template: https://github.com/jondot/dg/releases/download/v__VERSION__/dg-x86_64-macos.tar.xz
-  - platform: darwin
-    arch: arm64
-    url_template: https://github.com/jondot/dg/releases/download/v__VERSION__/dg-aarch64-macos.tar.xz
 
 brew:
   name: dg 
