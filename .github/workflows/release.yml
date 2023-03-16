@@ -111,6 +111,7 @@ jobs:
       - name: Build archive
         shell: bash
         run: |
+          rm -rf dist
           mkdir dist
           if [ "${{ matrix.os }}" = "windows-2019" ]; then
             cp "target/${{ matrix.target }}/release/$BIN_NAME.exe" "dist/"
@@ -156,6 +157,7 @@ jobs:
 
           rm -rf tmp
           mkdir tmp
+          rm -rf dist
           mkdir dist
 
           for dir in bins-* ; do
