@@ -41,7 +41,7 @@ For example - this discovered that I have local changes on `sqlx-crud`, and that
 ```
 $ brew tap jondot/tap && brew install dg
 ```
-Otherwise, grab a release from [releases](https://github.com/rusty-ferris-club/recon/releases).
+Otherwise, grab a release from [releases](https://github.com/jondot/dg/releases).
 
 ## Usage
 
