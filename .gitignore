@@ -1,6 +1,7 @@
 ## Rust
 
 todo.txt
+dist/
 
 # will have compiled files and executables
 debug/
