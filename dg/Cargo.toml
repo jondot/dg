@@ -35,7 +35,8 @@ cli = ["dep:eyre"]
 default = ["cli"]
 
 [dependencies]
-
+serde = "1.0.152"
+serde_derive = "1.0.160"
 eyre = { version = "0.6.8", optional = true }
 argh = "0.1.10"
 owo-colors = "3.5.0"
@@ -44,7 +45,7 @@ git2 = { version = "0.16.1", features = [
   "vendored-libgit2",
   "vendored-openssl",
 ] }
-ignore = "0.4.20"
+ignore = "0.4"
 indicatif = "0.17.3"
 num_cpus = "1.15.0"
 

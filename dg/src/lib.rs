@@ -3,14 +3,22 @@ use eyre::{bail, Result};
 use git2::{BranchType, Repository, StatusOptions};
 use ignore::{WalkBuilder, WalkState};
 use indicatif::ProgressBar;
+use serde_derive::Serialize;
 use std::{
+    path::Path,
     sync::{Arc, Mutex},
     time::Duration,
     vec,
 };
 use tabled::{object::Columns, Modify, Width};
 
-#[derive(Default, Debug)]
+#[derive(Default, Serialize, Debug)]
+pub struct RepoAnalysis {
+    pub current_branch: Option<String>,
+    pub commits: Option<Changes>,
+    pub branches: Option<BranchesState>,
+}
+#[derive(Default, Serialize, Debug)]
 pub struct Changes {
     pub modified: usize,
     pub new: usize,
@@ -20,7 +28,26 @@ pub struct Changes {
 impl Changes {
     #[must_use]
     pub fn is_empty(&self) -> bool {
-        self.modified + self.new + self.deleted == 0
+        self.total() == 0
+    }
+    #[must_use]
+    pub fn total(&self) -> usize {
+        self.modified + self.new + self.deleted
+    }
+}
+#[derive(Default, Serialize, Debug)]
+pub struct BranchesState {
+    pub ahead: Vec<String>,
+    pub missing: Vec<String>,
+}
+impl BranchesState {
+    #[must_use]
+    pub fn is_empty(&self) -> bool {
+        self.total() == 0
+    }
+    #[must_use]
+    pub fn total(&self) -> usize {
+        self.ahead.len() + self.missing.len()
     }
 }
 
@@ -92,6 +119,46 @@ fn find_non_pushed(repo: &Repository) -> Result<(Vec<String>, Vec<String>)> {
     Ok((nonpushed_commits, nonpushed_branches))
 }
 
+#[must_use]
+pub fn analyze_path(path: &Path, include_branches: bool) -> Option<RepoAnalysis> {
+    if path.exists() {
+        if let Ok(repo) = Repository::open(path) {
+            if !repo.is_bare() {
+                let mut opts = StatusOptions::new();
+                opts.include_ignored(false);
+                opts.exclude_submodules(true);
+                opts.include_untracked(true);
+
+                let statuses = repo.statuses(Some(&mut opts)).expect("cannot stat repo");
+
+                let changes = sum_changes(&statuses);
+                let current_branch = repo
+                    .head()
+                    .ok()
+                    .and_then(|h| h.shorthand().map(|s| s.to_string()));
+
+                if include_branches {
+                    let (ahead, missing) =
+                        find_non_pushed(&repo).map_or_else(|_| (vec![], vec![]), |state| state);
+                    if !changes.is_empty() || !ahead.is_empty() || !missing.is_empty() {
+                        return Some(RepoAnalysis {
+                            current_branch,
+                            commits: Some(changes),
+                            branches: Some(BranchesState { ahead, missing }),
+                        });
+                    }
+                } else if !changes.is_empty() {
+                    return Some(RepoAnalysis {
+                        current_branch,
+                        commits: Some(changes),
+                        branches: None,
+                    });
+                }
+            }
+        }
+    }
+    None
+}
 /// Run over folders
 ///
 ///
@@ -113,9 +180,8 @@ pub fn run(path: &str, include_branches: bool) -> Result<bool> {
             let mb = mb.clone();
             Box::new(move |result| {
                 if let Ok(result) = result {
-                    if result.path().join(".git").exists() {
-                        let path = result.path();
-
+                    let path = result.path();
+                    if path.exists() {
                         if let Ok(repo) = Repository::open(path) {
                             if !repo.is_bare() {
                                 let mut opts = StatusOptions::new();
